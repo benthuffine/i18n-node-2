@@ -7,6 +7,8 @@
  * @version 0.4.6
  */
 
+var _ = require('lodash');
+
 // dependencies
 var vsprintf = require("sprintf").vsprintf,
 	fs = require("fs"),
@@ -37,6 +39,17 @@ var i18n = module.exports = function(opt) {
 
 		opt.locales.forEach(function(locale) {
 			self.readFile(locale);
+		});
+
+		//	Cascade any locales containing a "-"
+		_.filter(opt.locales, function(locale) { return locale.match(/-/); }).forEach(function(locale) {
+			var locales = locale.split(/-/);
+			var parent_locale = locales[0];
+			for (var i=1; i<locales.length; i++) {
+				var child_locale = parent_locale + '-' + locales[i];
+				self.mergeLocale(parent_locale, child_locale);
+				parent_locale = child_locale;
+			}
 		});
 
 		this.defaultLocale = opt.locales[0];
@@ -350,6 +363,22 @@ i18n.prototype = {
 			// Only cache the files when we're not in dev mode
 			if (!this.devMode) {
 			    var file = this.locateFile(locale);
+				if ( !i18n.localeCache[file] ) {
+			    	i18n.localeCache[file] = data;
+				}
+			}
+		}
+	},
+
+	mergeLocale: function(parent_locale, child_locale) {
+		if (!this.locales[parent_locale]) {
+			return this.locales[child_locale];
+		} else {
+			var data = _.merge(_.clone(this.locales[parent_locale]), this.locales[child_locale]);
+			this.locales[child_locale] = data;
+
+			if (!this.devMode) {
+				var file = this.locateFile[child_locale];
 				if ( !i18n.localeCache[file] ) {
 			    	i18n.localeCache[file] = data;
 				}

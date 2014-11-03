@@ -7,6 +7,10 @@
  * Adds new strings on-the-fly when first used in your app.
  * No extra parsing needed.
 
+## Forked
+
+This is forked to allow for language cascading. e.g. a language setting of es-cl would load all of the standard spanish translations from es.json as well as the Chile-specific translations from es-cl.json.
+
 ## Installation
 
 Run the following:
