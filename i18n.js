@@ -253,6 +253,7 @@ i18n.prototype = {
 
 	// read locale file, translate a msg and write to fs if new
 	translate: function(locale, singular, plural) {
+//		console.log('translate: ' + locale + ': ' + singular + ': ' + plural);
 		if (!locale || !this.locales[locale]) {
 			if (this.devMode) {
 				console.warn("WARN: No locale found. Using the default (" +
@@ -273,6 +274,8 @@ i18n.prototype = {
 				this.writeFile(locale);
 			}
 		}
+
+//		console.log(this.locales[locale]);
 
 		return this.locales[locale][singular];
 	},
@@ -353,6 +356,7 @@ i18n.prototype = {
 
 	// basic normalization of filepath
 	locateFile: function(locale) {
+//		console.log('locateFile: ' + locale + ': ' + path.normalize(this.directory + '/' + locale + this.extension));
 		return path.normalize(this.directory + '/' + locale + this.extension);
 	},
 
